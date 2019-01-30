@@ -2,7 +2,7 @@
 
 *Premise*
 
-I created this project with a combination of a James Plus Games Tutorial
+I created this project with a combination of a Games Plus James Tutorial
 and my own scripts.
 
 
