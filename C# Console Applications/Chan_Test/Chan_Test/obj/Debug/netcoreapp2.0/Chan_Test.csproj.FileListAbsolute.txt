@@ -1,0 +1,33 @@
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/bin/Debug/netcoreapp2.0/Chan_Test.deps.json
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/bin/Debug/netcoreapp2.0/Chan_Test.runtimeconfig.json
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/bin/Debug/netcoreapp2.0/Chan_Test.runtimeconfig.dev.json
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/bin/Debug/netcoreapp2.0/Chan_Test.dll
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/bin/Debug/netcoreapp2.0/Chan_Test.pdb
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/obj/Debug/netcoreapp2.0/Chan_Test.csprojResolveAssemblyReference.cache
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/obj/Debug/netcoreapp2.0/Chan_Test.csproj.CoreCompileInputs.cache
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/obj/Debug/netcoreapp2.0/Chan_Test.AssemblyInfoInputs.cache
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/obj/Debug/netcoreapp2.0/Chan_Test.AssemblyInfo.cs
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/obj/Debug/netcoreapp2.0/Chan_Test.dll
+/Users/azure/Desktop/Google Drive/Unity/Shared/Chan_Test/Chan_Test/obj/Debug/netcoreapp2.0/Chan_Test.pdb
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.deps.json
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.runtimeconfig.json
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.runtimeconfig.dev.json
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.dll
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.pdb
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.csprojAssemblyReference.cache
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.csproj.CoreCompileInputs.cache
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.AssemblyInfoInputs.cache
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.AssemblyInfo.cs
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.dll
+F:\Users\Mike\Documents\Drive Backup\Unity\Shared\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.pdb
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.deps.json
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.runtimeconfig.json
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.runtimeconfig.dev.json
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.dll
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\bin\Debug\netcoreapp2.0\Chan_Test.pdb
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.csprojAssemblyReference.cache
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.csproj.CoreCompileInputs.cache
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.AssemblyInfoInputs.cache
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.AssemblyInfo.cs
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.dll
+F:\Users\Mike\Desktop\Work\Mine\Portfolio\C# Console Applications\Chan_Test\Chan_Test\obj\Debug\netcoreapp2.0\Chan_Test.pdb

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CheckMeFinal.AddUserPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Spacing="10">
+                <Label Text="Current Name"/>
+                <Entry x:Name="currentNameEntry" Placeholder="Enter Current Name" MaxLength="30"/>
+
+                <Label Text="Birth Name"/>
+                <Entry x:Name="birthNameEntry" Placeholder="Enter Birth Name" MaxLength="30"/>
+
+                <Label Text="Email"/>
+                <Entry x:Name="emailEntry" Placeholder="Enter Primary Email Address"
+                   Keyboard="Email" MaxLength="40"/>
+
+                <Label Text="Birth Place"/>
+                <Entry x:Name="birthPlaceEntry" Placeholder="Enter Birth Place" MaxLength="40"/>
+
+                <Label Text="Phone Number"/>
+                <Entry x:Name="phoneNumberEntry" Placeholder="Enter Phone Number"
+                   Keyboard="Telephone" MaxLength="14"/>
+
+                <Label Text="Household Information"/>
+                <Picker x:Name="householdInformationPicker" Title="Select Household Information">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}"
+                                 x:Name="pickerArray">
+                            <x:String>Alone</x:String>
+                            <x:String>With Spouse/Partner</x:String>
+                            <x:String>With Children</x:String>
+                            <x:String>With Parents</x:String>
+                            <x:String>Other</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <Label Text="Birth Date"/>
+                <DatePicker 
+                        x:Name="birthDateEntry"
+                        MinimumDate="1/1/1900"
+                        MaximumDate="1/1/2025"
+                        Format="dd-MM-yyyy"
+                        />
+
+                <Button Text="Save and Continue"
+                        Clicked="SaveData"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

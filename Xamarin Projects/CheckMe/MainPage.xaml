@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CheckMeFinal"
+             x:Class="CheckMeFinal.MainPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="New User"
+                     Clicked="ToolbarItem_Activated"/>
+
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <ScrollView>
+            <StackLayout>
+                <ListView x:Name="userListView"
+              ItemTapped="OnSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell
+                            x:Name="CellImage"
+                            Text="{Binding CurrentName}"
+                            Detail="Press to Select User" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

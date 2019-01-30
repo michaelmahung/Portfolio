@@ -1,0 +1,17 @@
+﻿<Properties StartupConfiguration="{8F3F18A9-CDBF-464D-A7C0-83CD83D6DAD3}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Chan_Test/Program.cs">
+    <Files>
+      <File FileName="Chan_Test/Program.cs" Line="32" Column="20" />
+      <File FileName="Chan_Test/Logic.cs" Line="261" Column="44" />
+      <File FileName="Chan_Test/TFunc.cs" Line="9" Column="23" />
+      <File FileName="Chan_Test/Staff.cs" Line="13" Column="4" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Chan__Test PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

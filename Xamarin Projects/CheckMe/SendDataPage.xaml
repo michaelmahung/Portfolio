@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CheckMeFinal.SendDataPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+
+                <Image x:Name="MainImage" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="AspectFit"/>
+
+                <Button Text="Take Photo" Clicked="TakePhoto"
+                 BackgroundColor="DarkGreen" TextColor="White"/>
+
+                <Button Text="Select Photo" Clicked="SelectPhoto"
+                    BackgroundColor="Navy" TextColor="White"/>
+
+                <Button Text="LoadPDF" Clicked="LoadPDF"
+                    BackgroundColor="Firebrick" TextColor="Black"/>
+
+                <Button Text="Send Data" Clicked="SendData"
+                    BackgroundColor="Yellow" TextColor="Black"/>
+
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
