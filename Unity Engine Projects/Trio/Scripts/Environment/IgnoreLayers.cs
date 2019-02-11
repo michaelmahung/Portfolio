@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 
-public class IgnoreInvisibleWalls : MonoBehaviour {
+//We probably want to switch most physics-based collision to work off of layers. 
+//This will potentially significantly reduce the amount of collisions occuring at any given time
+//and will reduce the strain on the CPU.
+
+public class IgnoreLayers : MonoBehaviour {
 
 	void Start ()
     {
@@ -18,5 +22,7 @@ public class IgnoreInvisibleWalls : MonoBehaviour {
      * Layer 8 = Invisible Wall
      * Layer 9 = Floor
      * Layer 10 = Player
+     * Layer 11 = FogLayer
+     * Layer 12 = Shield
      * */
 }

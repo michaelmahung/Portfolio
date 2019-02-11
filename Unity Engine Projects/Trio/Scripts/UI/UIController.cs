@@ -7,9 +7,9 @@ public class UIController : MonoBehaviour, IWeaponSwap {
 
     public bool ShowText;
     public bool GamePaused;
-    public GameObject PauseScreen;
-    public Text UIText;
-    public Text ScoreText;
+    [SerializeField] private GameObject PauseScreen;
+    [SerializeField] private Text UIText;
+    [SerializeField] private Text ScoreText;
 
     private string weaponName;
     private string songName;
@@ -17,7 +17,7 @@ public class UIController : MonoBehaviour, IWeaponSwap {
 
 	void Start ()
     {
-        filter = AudioManager.Instance.Filter;
+        filter = SFXManager.Instance.Filter;
         PauseScreen.SetActive(false);
         UpdateUIText();
 
@@ -28,7 +28,7 @@ public class UIController : MonoBehaviour, IWeaponSwap {
 
     public void WeaponSwapped()
     {
-        weaponName = GameManager.Instance.Player.GetComponent<PlayerWeapon>().playerWeapon.name;
+        weaponName = GameManager.Instance.PlayerObject.GetComponent<PlayerWeapon>().playerWeapon.name;
         UpdateUIText();
     }
 
@@ -68,6 +68,7 @@ public class UIController : MonoBehaviour, IWeaponSwap {
         }
     }
 
+    //We have any kind of error when Pausing/Unpausing, we want to make sure we default to an unpaused state
     public void PauseGame()
     {
         try

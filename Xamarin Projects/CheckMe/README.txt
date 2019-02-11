@@ -30,3 +30,4 @@ exposure to Xamarin development.
 -Basics of file reading and writing
 -File + Memory Streams
 -Rooting Android Emulators
+-Lambda Functions

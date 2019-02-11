@@ -30,21 +30,23 @@ public class GameManager : MonoBehaviour
     }
 
     [Header("Scorekeeping")]
-    public int CurrentScore;
+    [SerializeField] private int _currentScore;
+    public int CurrentScore { get { return _currentScore; } set { _currentScore = value; } }
 
     [Header("High Score List")]
-    public List<float> HighScores = new List<float>();
+    [SerializeField] private List<float> HighScores = new List<float>();
 
     [Header("Global Script References")]
-    public GameObject Player;
     public string PlayerRoom;
     public UIController UI;
     public Vector3 PlayerSpawnPosition;
-    public Shaker cameraShaker;
+    public Shaker CameraShaker;
+    public bool IsPlayerDead { get { return playerHealthReference.IsPlayerDead; } }
+    public GameObject PlayerObject { get; private set; }
 
     [Header("Difficulty Settings")]
     //Difficulty Multiplier work by Sam
-    public float[] Multiplier = {1.0f, 1.25f, 1.5f, 1.75f};
+    private readonly float[] multiplier = { 1.0f, 1.25f, 1.5f, 1.75f };
     public float Difficulty;
 
     public delegate void OnScoreAdded();
@@ -53,34 +55,46 @@ public class GameManager : MonoBehaviour
     public event OnPlayerRespawn PlayerRespawned;
 
     private bool canRespawn;
-
+    private PlayerHealth playerHealthReference;
 
     public void AddScore(int score)
     {
         CurrentScore += score;
+
         if (CurrentScore < 0)
         {
             CurrentScore = 0;
         }
-        ScoreAdded();
+
+        ScoreAdded(); //Tell everyone weve changed our score.
     }
 
     public void ResetPlayerPosition()
     {
-        Player.transform.position = PlayerSpawnPosition;
-        Rigidbody rb = Player.GetComponent<Rigidbody>();
+        PlayerObject.transform.position = PlayerSpawnPosition;
+        Rigidbody rb = PlayerObject.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+    }
+
+    public void RespawnPlayer()
+    {
+        if (canRespawn)
+        {
+            PlayerObject.SetActive(true);
+            ResetPlayerPosition();
+            PlayerRespawned();
+        }
     }
 
     #region Private Functions
     private void Awake()
     {
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject); //TODO - make GameManager it's own object in scene.
 
         SetComponents();
-        Difficulty = Multiplier[3];
+        Difficulty = multiplier[3];
 
         if (PlayerPrefs.HasKey("HighScores"))
         {
@@ -92,46 +106,25 @@ public class GameManager : MonoBehaviour
     {
         PlayerHealth.PlayerKilled += CanRespawn;
 
+        //If there isnt a default spawn position set, make where the player starts in the scene the spawn position.
         if (PlayerSpawnPosition == null)
         {
-            PlayerSpawnPosition = Player.transform.position;
+            PlayerSpawnPosition = PlayerObject.transform.position;
         }
-    }
-
-    private void Update ()
-	{
-		if (Input.GetKeyDown (KeyCode.R)) {
-			RespawnPlayer ();
-		}
-
-		if (Input.GetKeyDown (KeyCode.V)) {
-		Difficulty = Multiplier[3];
-			print(Difficulty);
-		}
     }
 
     //Basically the start function
     private void SetComponents()
     {
-        Player = FindObjectOfType<PlayerHealth>().gameObject;
-        PlayerRoom = Player.GetComponent<PlayerStats>().MyRoomName;
-        UI = GameObject.FindObjectOfType<UIController>();
+        playerHealthReference = FindObjectOfType<PlayerHealth>();
+        PlayerObject = playerHealthReference.gameObject;
+        PlayerRoom = PlayerObject.GetComponent<PlayerStats>().MyRoomName;
+        UI = FindObjectOfType<UIController>();
     }
 
     private void CanRespawn()
     {
         canRespawn = true;
-    }
-
-
-    private void RespawnPlayer()
-    {
-        if (canRespawn)
-        {
-            Player.SetActive(true);
-            ResetPlayerPosition();
-            PlayerRespawned();
-        }
     }
 
     #endregion

@@ -14,7 +14,7 @@ public class WeaponSwitching : MonoBehaviour
     void Start()
     {
         Instance = this;
-        playerWeapon = GameManager.Instance.Player.GetComponent<PlayerWeapon>();
+        playerWeapon = GameManager.Instance.PlayerObject.GetComponent<PlayerWeapon>();
         allWeapons = transform.GetComponentsInChildren<BaseWeapon>();
         weaponSwap = GameManager.Instance.UI.GetComponent<IWeaponSwap>();
 
@@ -33,10 +33,10 @@ public class WeaponSwitching : MonoBehaviour
         UpdateWeapon();
     }
 
+    //We are going to check our weapons starting at the weapon immediately after the one we are using.
+    //If we loop through the entire array of weapons and none of them can be activated, don't do anything.
     private void NextWeapon(int startingIndex)
     {
-//*Turned off by Sam */        Debug.Log(allWeapons.Length);
-
         for (int i = startingIndex + 1; i < allWeapons.Length + 1; i++)
         {
             if (i == allWeapons.Length)
@@ -46,14 +46,12 @@ public class WeaponSwitching : MonoBehaviour
 
             if (i == startingIndex)
             {
-                //Debug.Log("No other active weapons found");
                 break;
             } else if (allWeapons[i].WeaponActive)
             {
                 weaponIndex = i;
                 allWeapons[startingIndex].gameObject.SetActive(false);
                 allWeapons[weaponIndex].gameObject.SetActive(true);
-                //Debug.Log("switching to new weapon: " + allWeapons[weaponIndex].gameObject.name);
                 UpdateWeapon();
                 break;
             } else

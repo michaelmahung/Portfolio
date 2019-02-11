@@ -30,19 +30,20 @@
 
 public class RoomSetter : MonoBehaviour {
 
-    public string RoomName;
     public int EnemyCount;
     public int EnemyCap;
+    public string RoomName;
     public BaseDoor MyDoor;
+
     public SpawnEnemies[] MySpawners;
+    [SerializeField] private Transform camPlacement;
+    [SerializeField] private GameObject cam;
+    [SerializeField] private GameObject RoomLight;
 
-    public Transform camPlacement;
-    public GameObject cam;
-    public GameObject RoomLight;
-    private CameraController2 cc;
+    private CameraController2 camController;
 
-    public Color CeilingColorFull = Color.green;
-    public Color CeilingColorClear = Color.green;
+    [SerializeField] private Color CeilingColorFull = Color.green;
+    [SerializeField] private Color CeilingColorClear = Color.green;
 
     public delegate void UpdateRoomDelegate();
     public static event UpdateRoomDelegate UpdatePlayerRoom;
@@ -52,8 +53,11 @@ public class RoomSetter : MonoBehaviour {
 
         MyDoor = GetComponentInChildren<BaseDoor>();
         MySpawners = GetComponentsInChildren<SpawnEnemies>();
-        RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorFull;
-        CeilingColorClear.a = 0.5f;
+        if(RoomLight != null)
+        {
+            RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorFull;
+        }
+        //CeilingColorClear.a = 0.5f;
         if (MyDoor != null)
         {
             MyDoor.MyRoom = this;
@@ -64,7 +68,7 @@ public class RoomSetter : MonoBehaviour {
 		if (string.IsNullOrEmpty(RoomName))
         {
             RoomName = gameObject.name;
-            cc = GameObject.FindObjectOfType<CameraController2>();
+            camController = FindObjectOfType<CameraController2>();
         }
 	}
 
@@ -83,19 +87,27 @@ public class RoomSetter : MonoBehaviour {
 
         if (other.tag == "Player")
         {
-            cc.player = camPlacement.gameObject;
-            RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorClear;
-        
+            camController.SetFocalPoint(camPlacement.gameObject);
+
+            if (RoomLight != null)
+            {
+                RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorClear;
+            }
             //If the player is found entering a new room, Update everyone listening thats listening for that event. 
             UpdatePlayer();
+            
         }
+        //Debug.Log(other.gameObject.name);
     }
 
     private void OnTriggerExit(Collider other)
     {
         UpdatePlayerRoom();
         if(other.tag == "Player"){
-        RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorFull;
+            if (RoomLight != null)
+            {
+                RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorFull;
+            }
         }
     }
 

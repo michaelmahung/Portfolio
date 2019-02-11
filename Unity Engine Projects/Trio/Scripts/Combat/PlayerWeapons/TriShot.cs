@@ -25,6 +25,5 @@ public class TriShot : BaseWeapon
     new void Start()
     {
         base.Start();
-        GetWeaponActive();
     }
 }

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ShieldBehavior : MonoBehaviour, IDamageable<float> {
-
+    public Material origMat;
+    public Material newMat;
     public bool spawnShield;
     public bool shieldDown;
     public bool genShield;
+    public bool changeColor;
     public int health;
     public Transform spawnPoint;
+    
     //public ShieldController sC;
     //public GameObject shieldObject;
     
@@ -36,7 +39,7 @@ void Start () {
         if(health <= 0)
         {
             shieldDown = true;
-            print("Shield down!");
+            //print("Shield down!");
         }
         /*if (sC.raiseShields == true)
         {
@@ -49,14 +52,19 @@ void Start () {
                 m.enabled = true;
                 spawnPoint.transform.localScale = Vector3.Lerp(spawnPoint.transform.localScale, spawnPoint.transform.localScale * 2, Time.deltaTime * 1.35f);
                 shieldDown = false;
-            health = 10;
-            //sC.raiseShields = false;
+                health = 10;
                 Invoke("SwitchGen", .5f);
-                //genShield = false;
+                
             }
-        
-       
-	}
+            if(changeColor == true)
+            {
+            spawnPoint.GetComponent<MeshRenderer>().material = newMat;
+            Invoke("ChangeBack", .1f);
+            }
+             
+
+
+    }
 
     private void OnCollisionEnter(Collision other)
     {
@@ -67,10 +75,18 @@ void Start () {
     {
         // print("Im hit");
         health--;
+        
+        changeColor = true;
     }
 
     void SwitchGen()
     {
         genShield = false;
+    }
+
+    void ChangeBack()
+    {
+        spawnPoint.GetComponent<MeshRenderer>().material = origMat;
+        changeColor = false;
     }
 }

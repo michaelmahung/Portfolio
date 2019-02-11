@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SideTurret : MonoBehaviour {
+public class SideTurret : MonoBehaviour, IDamageable<float> {
 
     public MainController controller;
     public GameObject body;
@@ -18,8 +18,14 @@ public class SideTurret : MonoBehaviour {
     public GameObject shot3;
 
     public float atkTime;
+    public float p1Time;
+    public float p2Time;
+    public float p3Time;
 
     public GameObject spawn;
+    public GameObject Tbody;
+    public GameObject cap;
+    public GameObject barrel;
 
     public bool p1fire;
     public bool p2fire;
@@ -27,10 +33,13 @@ public class SideTurret : MonoBehaviour {
 
     public bool attacking;
 
+    public bool changeColor;
+
     // Use this for initialization
     void Start () {
 
         controller = body.GetComponent<MainController>();
+        health = maxHealth;
 
     }
 
@@ -38,33 +47,78 @@ public class SideTurret : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		
-        if(controller.phase == "Attack")
-        {
-           
-            if(controller.attackPhase == 1)
+        
+            if (controller.phase == "Attack" && disabled == false )
             {
-                atkTime = 1.0f;
+            //print("im attacking you fucker");
+                if (controller.attackPhase == 1)
+                {
+                //print("I am in attack phase 1");
+                    atkTime = p1Time;
+                    if (attacking == false)
+                    {
+                        attacking = true;
+                        StartCoroutine(PhaseOne());
+                    }
+
+                }
+
+                if (controller.attackPhase == 2)
+                {
+                    atkTime = p2Time;
+                    if (attacking == false)
+                         {
+                            attacking = true;
+                            StartCoroutine(PhaseTwo());
+                        }
+            }
+
+                if (controller.attackPhase == 3)
+                {
+                atkTime = p3Time;
                 if (attacking == false)
                 {
                     attacking = true;
-                    StartCoroutine(PhaseOne());
+                    StartCoroutine(PhaseThree());
                 }
-                
-            }
-
-            if (controller.attackPhase == 2)
-            {
-
-            }
-
-            if (controller.attackPhase == 3)
-            {
-
             }
 
 
+
+            }
+        
+        else
+        {
+            StopAllCoroutines();
+            attacking = false;
         }
+            if (health <= 0)
+            {
+                disabled = true;
+            }
+        if(controller.attackPhase == 3 && disabled == true)
+        {
+            dead = true;
+            transform.gameObject.tag = "Untagged";
+            DestroyPhys();
+        }
+        if(disabled == true)
+        {
+            Tbody.GetComponent<MeshRenderer>().material.color = Color.black;
+            cap.GetComponent<MeshRenderer>().material.color = Color.black;
+        }
+        if(disabled == false && changeColor == false)
+        {
+            Tbody.GetComponent<MeshRenderer>().material.color = Color.blue;
+            cap.GetComponent<MeshRenderer>().material.color = Color.blue;
+        }
+        if(changeColor == true)
+        {
+            Tbody.GetComponent<MeshRenderer>().material.color = Color.red;
+            cap.GetComponent<MeshRenderer>().material.color = Color.red;
+            Invoke("ChangeBack", .1f);
+        }
+
 
 	}
 
@@ -74,7 +128,7 @@ public class SideTurret : MonoBehaviour {
         p1fire = false;
         GameObject fire;
         fire = Instantiate(shot1, spawn.transform.position, spawn.transform.rotation) as GameObject;
-        if(p1fire == false)
+        if(p1fire == false )
         {
             //print("I am shooting a bullet");
             p1fire = true;
@@ -88,13 +142,67 @@ public class SideTurret : MonoBehaviour {
         }
     }
 
-    void PhaseTwo()
+    public IEnumerator PhaseTwo()
     {
+        yield return new WaitForSeconds(atkTime);
+        p2fire = false;
+        GameObject fire;
+        fire = Instantiate(shot2, spawn.transform.position, spawn.transform.rotation) as GameObject;
+        if (p2fire == false)
+        {
+            //print("I am shooting a bullet");
+            p2fire = true;
+            StartCoroutine(PhaseTwo());
 
+        }
+        else
+        {
+            attacking = false;
+            StopCoroutine(PhaseTwo());
+        }
     }
 
-    void PhaseThree()
+    public IEnumerator PhaseThree()
     {
+        yield return new WaitForSeconds(atkTime);
+        p3fire = false;
+        GameObject fire;
+        fire = Instantiate(shot3, spawn.transform.position, spawn.transform.rotation) as GameObject;
+        if (p3fire == false)
+        {
+            //print("I am shooting a bullet");
+            p3fire = true;
+            StartCoroutine(PhaseThree());
 
+        }
+        else
+        {
+            attacking = false;
+            StopCoroutine(PhaseThree());
+        }
+    }
+
+    public void Damage(float hurt)
+    {
+        health--;
+        if (health > 0)
+        {
+            changeColor = true;
+        }
+    }
+
+    public void DestroyPhys()
+    {
+        Tbody.SetActive(false);
+        cap.SetActive(false);
+        barrel.SetActive(false);
+        spawn.SetActive(false);
+    }
+
+    public void ChangeBack()
+    {
+        Tbody.GetComponent<MeshRenderer>().material.color = Color.blue;
+        cap.GetComponent<MeshRenderer>().material.color = Color.blue;
+        changeColor = false;
     }
 }

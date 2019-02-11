@@ -4,61 +4,113 @@ using UnityEngine;
 
 public class BaseProjectile : MonoBehaviour, IPooledObject
 {
-    public float projectileDamage { get; set; }
-    public float projectileSpeed { get; set; }
-    public float activeTime { get; set; }
+    //All of these variables will be set by the weapon firing the projectile, no need to assign them.
+    public float ProjectileDamage { get; set; }
+    public float ProjectileSpeed { get; set; }
+    public float ActiveTime { get; set; }
 
-    bool hitEnemy;
-    bool hitWall;
+    protected float RaycastHitLength { get; set; } //How far ahead of the projectile will it check for objects.
+    protected float RayHitDelay { get; set; } //How long to wait after hitting something with a raycast to react to it
+
+    Collider thisCollider;
     protected string hitTag;
-    int shld;
     protected IDamageable<float> thingHit;
 
-    
-
-    public void OnObjectSpawn()
+    void FixedUpdate()
     {
-        Invoke("Deactivate", activeTime);
+        if (gameObject.activeInHierarchy)
+        {
+            FireRay();
+            transform.position += transform.forward * ProjectileSpeed * Time.deltaTime;
+        }
+
+        return;
     }
-
-    public void FixedUpdate()
-    {
-        transform.position += transform.forward * projectileSpeed * Time.deltaTime;
-    } 
 
     public void Deactivate()
     {
-        gameObject.SetActive(false);
+        if (gameObject.activeInHierarchy)
+        {
+            //Debug.Log("Deactivating");
+            if (thisCollider != null)
+            {
+                thisCollider.enabled = false;
+            }
+            gameObject.SetActive(false);
+            hitTag = null;
+            thingHit = null;
+        }
     }
 
-   
+    virtual protected void Awake()
+    {
+        thisCollider = GetComponent<Collider>();
+        RaycastHitLength = 0.25f;
+        RayHitDelay = 0.75f;
+    }
 
-    virtual public void OnTriggerEnter (Collider other)
+    //HAS to be public since its from the IPooledObject interface.
+    public void OnObjectSpawn()
+    {
+        thisCollider.enabled = true;
+        Invoke("Deactivate", ActiveTime);
+    }
+
+    //Due to bullets phasing through walls when traveling at high enough speeds, I decided to add a function that will cause each projectile
+    //To fire a Raycast forwards while moving - The distance that the raycast will be fired can be set using RaycastHitLength.
+    //Im not sure about this performance-wise, but it has helped significantly - Unity will release a new version with better
+    //collision detection but I don't think we wan't to upgrade versions in the middle of development.
+    virtual protected void FireRay()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, RaycastHitLength))
+        {
+            hitTag = hit.transform.tag;
+            thingHit = hit.transform.gameObject.GetComponent<IDamageable<float>>();
+        }
+
+        if (thingHit != null && hitTag != "Player" && hitTag != "Untagged" && hitTag != "PlayerBaseShot")
+        {
+            StartCoroutine(LateDamage(thingHit, RayHitDelay));
+            //thingHit.Damage(projectileDamage);
+        }
+
+        else if (hitTag == "Wall" || hitTag == "Shield" || hitTag == "eProjectile")
+        {
+            //Debug.Log(hitTag);
+            Invoke("Deactivate", RayHitDelay);
+        }
+    }
+
+    virtual protected void DealDamage(IDamageable<float> thingToDamage)
+    {
+        //Debug.Log(thingToDamage);
+        Deactivate();
+        thingToDamage.Damage(ProjectileDamage);
+    }
+
+    virtual protected IEnumerator LateDamage(IDamageable<float> thingToDamage, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DealDamage(thingToDamage);
+    }
+
+    //Collider-based hit detection, may still be used to very fast objects as insurance.
+
+    virtual protected void OnTriggerEnter (Collider other)
 	{
-//        ShieldBehavior s = gameObject.GetComponent<ShieldBehavior>();
-
-        //shld = other.gameObject.GetComponent<ShieldBehavior>().health;
         hitTag = other.gameObject.tag;
         thingHit = other.gameObject.GetComponent <IDamageable<float>>();
         
         if (thingHit != null && hitTag != "Player" && hitTag != "Untagged")
         {
-            thingHit.Damage(projectileDamage);
-            Deactivate();
+            DealDamage(thingHit);
         }
 
-        else if (hitTag == "Wall" || hitTag == "Shield")
+        else if (hitTag == "Wall" || hitTag == "Shield" || hitTag == "eProjectile")
         {
-            //if(hitTag == "Shield")
-           // {
-                //print("Im hit");
-                //other.gameObject.GetComponent<ShieldBehavior>().health--;
-            //}
             Deactivate();
-            
-
         }
-        
-
     }
 }
