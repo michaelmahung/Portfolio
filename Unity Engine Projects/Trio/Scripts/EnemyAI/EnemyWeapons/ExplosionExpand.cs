@@ -17,7 +17,7 @@ private Vector3 targetScale;
 
 	// Use this for initialization
 	void Start () {
-        Damage = 30 * GameManager.Instance.Difficulty;
+        Damage = 10 * GameManager.Instance.Difficulty;
 	Changing = false;
 	Unchanged = true;
 	initialSize = gameObject.transform.localScale.x;
@@ -66,11 +66,19 @@ private Vector3 targetScale;
 
             }
             otherDamageable.Damage(Damage);
-            Destroy(this.gameObject);
+            if (other.tag != "Player")
+            {
+                Destroy(this.gameObject);
+            }
         }
         else if (thingHitTag == "Wall")
         {
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
+        }
+        if(other.name == "RotBase")
+        {
+            this.GetComponent<Collider>().enabled = false;
+            //Destroy(this.gameObject);
         }
 
     }

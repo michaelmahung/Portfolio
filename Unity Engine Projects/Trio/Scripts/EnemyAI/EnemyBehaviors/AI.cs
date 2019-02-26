@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using StateStuff;
+using System; // to use public event Actions
 
 public abstract class AI : MonoBehaviour, ITrackRooms, IDamageable<float>
 {
@@ -12,6 +13,9 @@ public string MyRoomName { get; set; } // What room is the enemy in.
 public RoomSetter MyRoom { get; set; }
 private Color EnemyBaseColor; //Handles Color change on damage to enemy
 public Rigidbody AIRigidbody;
+
+public GameObject FiringPoint;
+public HealthBarCode HealthBar;
 
 //Floats
 [Tooltip("Movement Speed Of Enemy")]
@@ -48,6 +52,9 @@ public bool Dead;
 public int WeaponValue; // int to allow selection of enemy weapon prefabs within the EnemyWeapons array, used in Enemy Engagement Class
 //Bools
 
+//Public Event
+public event Action<float> OnHealthPctChanged = delegate {};
+
 
 
 public StateMachine<AI> stateMachine { get; set; }
@@ -62,19 +69,13 @@ public StateMachine<AI> stateMachine { get; set; }
 		EnemyWeapons = Resources.LoadAll<GameObject> ("Prefabs/EnemyWeapons"); // Assigns the entire contents of the folder EnemyWeapons in the Resources folder to the EnemyWeapons array.
         EnemyBaseColor = gameObject.GetComponent<Renderer>().material.color;
         RoomSetter.UpdatePlayerRoom += CheckRoom;
-        Invoke("FindMyRoom", 0.1f);
+        Invoke("CheckRoom", 0.1f);
     }
 
     private void Update()
     {
         stateMachine.Update();
     }
-
-    void FindMyRoom()
-    {
-        MyRoom = GameObject.Find(MyRoomName).GetComponent<RoomSetter>();
-    }
-
 
    //Handles Enemies getting hurt, dying, changing colors
    //***********************************************************************************************************************
@@ -85,8 +86,11 @@ public StateMachine<AI> stateMachine { get; set; }
         if (IsEnabled)
         {
             currentHealth -= damage;
+            float currentHealthPct = (float)currentHealth/(float)EnemyHealth;
+            OnHealthPctChanged(currentHealthPct);
             //StartCoroutine(LerpColor()); // begin lerping color to show damage to enemy
             UpdateHealthPercentage();
+            HealthBar.HealthChange(currentHealthPct);
             if (currentHealth <= 0)
             {
                 enemyDeath();
@@ -118,7 +122,7 @@ public StateMachine<AI> stateMachine { get; set; }
             }
             RoomSetter.UpdatePlayerRoom -= CheckRoom;
             GameManager.Instance.AddScore(KillPoints);
-            RoomManager.Instance.AddToDoor(MyRoom);
+            RoomManager.Instance.AddToDoor(GameManager.Instance.PlayerRoom, RoomManager.KillType.Enemy); //Changed by Mike to specify what kind of addition was made to the door.
             //RoomManager.Instance.AddToDoor(CurrentRoom, BaseDoor.openCondition.Kills);
             Destroy(gameObject);
         }
@@ -132,7 +136,8 @@ public StateMachine<AI> stateMachine { get; set; }
 
 	public virtual void lookAtPlayer()
     {
-        transform.LookAt(Hero);
+        Vector3 targetPosition = new Vector3(Hero.position.x, this.transform.position.y, Hero.position.z);
+        this.transform.LookAt(targetPosition);
     }
 
 	public virtual void ChasePlayer()
@@ -157,7 +162,7 @@ public StateMachine<AI> stateMachine { get; set; }
 	public IEnumerator FireWeapon ()
 	{
 		yield return new WaitForSeconds (EnemyAttackSpeed);
-		Instantiate (EnemyWeapons [WeaponValue], transform.position, transform.rotation);
+		Instantiate (EnemyWeapons [WeaponValue], FiringPoint.transform.position, FiringPoint.transform.rotation);
 
         if (IsFiring == false)
         {

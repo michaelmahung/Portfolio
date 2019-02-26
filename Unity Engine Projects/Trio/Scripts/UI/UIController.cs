@@ -17,6 +17,7 @@ public class UIController : MonoBehaviour, IWeaponSwap {
 
 	void Start ()
     {
+        FindComponents();
         filter = SFXManager.Instance.Filter;
         PauseScreen.SetActive(false);
         UpdateUIText();
@@ -40,7 +41,7 @@ public class UIController : MonoBehaviour, IWeaponSwap {
 
     public void UpdateScoreText()
     {
-        ScoreText.text = "Current Score: " + GameManager.Instance.CurrentScore;
+        ScoreText.text = GameManager.Instance.CurrentScore.ToString();
     }
 
 	public void UpdateUIText()
@@ -96,5 +97,23 @@ public class UIController : MonoBehaviour, IWeaponSwap {
             filter.enabled = false;
         }
 
+    }
+
+    void FindComponents()
+    {
+        if (PauseScreen == null)
+        {
+            PauseScreen = GameObject.Find("PauseScreen");
+        }
+
+        if (ScoreText == null)
+        {
+            ScoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+        }
+
+        if (UIText == null)
+        {
+            UIText = GameObject.Find("UIText").GetComponent<Text>();
+        }
     }
 }

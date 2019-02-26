@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 //Basic room script for collision detection
 
@@ -28,59 +29,67 @@
 //The benefit from this is that we can create a static event - making it accessable to any other script.
 //In this case we will make a global event called UpdatePlayerRoom that will alert any script that wants to listen to it whenever the player enters a new room.
 
+    //TODO clean up or split this class up - maybe rename?
+
 public class RoomSetter : MonoBehaviour {
 
     public int EnemyCount;
     public int EnemyCap;
     public string RoomName;
-    public BaseDoor MyDoor;
+    public List<BaseDoor> MyDoors = new List<BaseDoor>();
+
+    public bool IsCleared { get; private set; }
 
     public SpawnEnemies[] MySpawners;
+    public RoomSpawnPoint[] MyOpenWalls;
     [SerializeField] private Transform camPlacement;
     [SerializeField] private GameObject cam;
-    [SerializeField] private GameObject RoomLight;
 
     private CameraController2 camController;
-
-    [SerializeField] private Color CeilingColorFull = Color.green;
-    [SerializeField] private Color CeilingColorClear = Color.green;
+    private RoomLight myLight;
 
     public delegate void UpdateRoomDelegate();
     public static event UpdateRoomDelegate UpdatePlayerRoom;
 
-    private void Awake()
+    void Awake()
     {
+        LevelSpawning.FinishedSpawningRooms += FinalizeRoom;
+        camController = FindObjectOfType<CameraController2>();
 
-        MyDoor = GetComponentInChildren<BaseDoor>();
-        MySpawners = GetComponentsInChildren<SpawnEnemies>();
-        if(RoomLight != null)
-        {
-            RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorFull;
-        }
-        //CeilingColorClear.a = 0.5f;
-        if (MyDoor != null)
-        {
-            MyDoor.MyRoom = this;
-        }
+        cam = camController.gameObject;
     }
 
     void Start () {
-		if (string.IsNullOrEmpty(RoomName))
+
+        if (string.IsNullOrEmpty(RoomName))
         {
             RoomName = gameObject.name;
-            camController = FindObjectOfType<CameraController2>();
         }
-	}
+    }
+
+    void FinalizeRoom()
+    {
+        MyOpenWalls = GetComponentsInChildren<RoomSpawnPoint>();
+
+        foreach (RoomSpawnPoint point in MyOpenWalls)
+        {
+            point.SetMyRoom(this);
+        }
+
+        FindComponents();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         ITrackRooms roomTracker = other.GetComponent<ITrackRooms>();
 
-        if (roomTracker != null)
+        if (roomTracker != null && other.tag != "Enemy")
         {
             roomTracker.MyRoomName = RoomName;
+
             if (roomTracker.MyRoom == null)
             {
+                //Debug.Log(other.gameObject.name);
                 roomTracker.MyRoom = this;
             }
         }
@@ -89,32 +98,42 @@ public class RoomSetter : MonoBehaviour {
         {
             camController.SetFocalPoint(camPlacement.gameObject);
 
-            if (RoomLight != null)
+            if (myLight != null)
             {
-                RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorClear;
+                myLight.ToggleLight(true);
             }
+
             //If the player is found entering a new room, Update everyone listening thats listening for that event. 
             UpdatePlayer();
             
         }
-        //Debug.Log(other.gameObject.name);
     }
 
-    private void OnTriggerExit(Collider other)
+    /*private void OnTriggerExit(Collider other)
     {
-        UpdatePlayerRoom();
+        if (UpdatePlayerRoom != null)
+        {
+            UpdatePlayerRoom();
+        }
+
         if(other.tag == "Player"){
-            if (RoomLight != null)
+
+            if (myLight != null)
             {
-                RoomLight.GetComponent<MeshRenderer>().material.color = CeilingColorFull;
+                myLight.ToggleLight(false);
             }
         }
-    }
+    }*/
 
     public void UpdatePlayer()
     {
-        GameManager.Instance.PlayerRoom = RoomName;
-        UpdatePlayerRoom();
+        GameManager.Instance.PlayerRoomName = RoomName;
+        GameManager.Instance.PlayerRoom = this;
+
+        if (UpdatePlayerRoom != null)
+        {
+            UpdatePlayerRoom();
+        }
     }
 
     public void AddEnemy()
@@ -134,5 +153,47 @@ public class RoomSetter : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    public void RoomCleared()
+    {
+        IsCleared = true;
+    }
+
+    void FindComponents()
+    {
+        BaseDoor[] _doors = GetComponentsInChildren<BaseDoor>();
+
+        foreach(BaseDoor baseDoor in _doors)
+        {
+            MyDoors.Add(baseDoor);
+        }
+
+        MySpawners = GetComponentsInChildren<SpawnEnemies>();
+        myLight = GetComponentInChildren<RoomLight>();
+        MyOpenWalls = GetComponentsInChildren<RoomSpawnPoint>();
+
+        if (camPlacement == null)
+        {
+            camPlacement = GameManager.Instance.PlayerObject.transform;
+        }
+
+        if (cam == null)
+        {
+            cam = FindObjectOfType<CameraController2>().gameObject;
+        }
+
+        if (MyDoors.Count > 0)
+        {
+            foreach (BaseDoor door in MyDoors)
+            {
+                door.AddRoom(this);
+            }
+        }
+
+        foreach (RoomSpawnPoint point in MyOpenWalls)
+        {
+            point.SpawnRandom();
+        }
     }
 }

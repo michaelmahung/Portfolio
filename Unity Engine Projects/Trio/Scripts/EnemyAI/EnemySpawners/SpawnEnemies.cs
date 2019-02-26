@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class SpawnEnemies : MonoBehaviour, ITrackRooms {
 
-public float SpawnTimer = 3.0f;
+public float SpawnTimer;
 public bool IsSpawning;
 public bool SpawnerTransition;
 public float SpawnMovementSpeed;
 public bool SpawnMover;
+
 public Transform StartPosition;
 public Transform EndPosition;
 public GameObject[] EnemyTypes;
+public GameObject SpawnPoint;
 public string MyRoomName { get; set; }
 public RoomSetter MyRoom { get; set; }
 private int RandomChance;
+
 
 
 	// Use this for initialization
@@ -30,7 +33,7 @@ private int RandomChance;
 	// Update is called once per frame
 	void Update ()
 	{
-	float step = SpawnMovementSpeed * Time.deltaTime;
+	/*float step = SpawnMovementSpeed * Time.deltaTime;
 		if (SpawnMover == false) {
 			transform.position = Vector3.MoveTowards(transform.position, EndPosition.position, step);
 
@@ -48,28 +51,76 @@ private int RandomChance;
 				SpawnMover = false;
 			}
 		}
+        */
 	}
 
 	IEnumerator BeginSpawning ()
 	{
-		yield return new WaitForSeconds (SpawnTimer);
+        //print(Time.time);
+	yield return new WaitForSeconds (SpawnTimer);
+    //print(Time.time);
+        //print ("I waited");
+        
 
         if (MyRoom.EnemiesCapped() == false)
         {
             RandomChance = Random.Range(1, 100);
+            //print (RandomChance);
             if (RandomChance <= 40)
             {
-                Instantiate(EnemyTypes[4], transform.position, transform.rotation);
+                print ("Trooper");
+                if(gameObject.name != "SpawnDoor"){
+
+                    //Caching the object spawned so we can tell it what room to assign itself to - Mike
+                    //This should fix the issue where enemies are spawning across rooms and not activating properly
+
+                    GameObject go = Instantiate(EnemyTypes[2], transform.position, transform.rotation);
+                    ITrackRooms room = go.GetComponent<ITrackRooms>();
+                    room.MyRoom = MyRoom;
+                }
+                else if(gameObject.name == "SpawnDoor")
+                {
+                   GameObject go = Instantiate(EnemyTypes[2], SpawnPoint.transform.position, transform.rotation);
+                    ITrackRooms room = go.GetComponent<ITrackRooms>();
+                    room.MyRoom = MyRoom;
+                }
+                
             }
+         
 
             if (RandomChance > 40 && RandomChance < 80)
             {
-                Instantiate(EnemyTypes[2], transform.position, transform.rotation);
+                 print ("Gunner");
+                if(gameObject.name != "SpawnDoor"){
+                    GameObject go = Instantiate(EnemyTypes[1], transform.position, transform.rotation);
+                    ITrackRooms room = go.GetComponent<ITrackRooms>();
+                    room.MyRoom = MyRoom;
+                }
+                else if(gameObject.name == "SpawnDoor")
+                {
+                    GameObject go = Instantiate(EnemyTypes[1], SpawnPoint.transform.position, transform.rotation);
+                    ITrackRooms room = go.GetComponent<ITrackRooms>();
+                    room.MyRoom = MyRoom;
+                }
+            
+
             }
 
             if (RandomChance >= 80)
             {
-                Instantiate(EnemyTypes[1], transform.position, transform.rotation);
+                 print ("Boomer");
+                if(gameObject.name != "SpawnDoor"){
+                    GameObject go = Instantiate(EnemyTypes[0], transform.position, transform.rotation);
+                    ITrackRooms room = go.GetComponent<ITrackRooms>();
+                    room.MyRoom = MyRoom;
+                }
+                else if(gameObject.name == "SpawnDoor")
+                {
+                    GameObject go = Instantiate(EnemyTypes[0], SpawnPoint.transform.position, transform.rotation);
+                    ITrackRooms room = go.GetComponent<ITrackRooms>();
+                    room.MyRoom = MyRoom;
+                }
+                
             }
 
             MyRoom.AddEnemy();
@@ -81,7 +132,7 @@ private int RandomChance;
     {
         if (gameObject.activeInHierarchy == true)
         {
-            if (GameManager.Instance.PlayerRoom == MyRoomName)
+            if (GameManager.Instance.PlayerRoom == MyRoom)
             {
                 StartSpawns();
             }

@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SideTurret : MonoBehaviour, IDamageable<float> {
 
     public MainController controller;
     public GameObject body;
+    public Image healthBar;
+    //public GameObject healthBG;
+    public GameObject healthCanvas;
 
-    public int health;
-    public int maxHealth = 10;
+    public float health;
+    public float maxHealth = 10;
 
     public bool disabled;
     public bool dead;
@@ -21,15 +25,19 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
     public float p1Time;
     public float p2Time;
     public float p3Time;
-
+    
     public GameObject spawn;
     public GameObject Tbody;
     public GameObject cap;
     public GameObject barrel;
+    public Material nBlue;
+    public Material nRed;
+    public Material nBlack;
 
     public bool p1fire;
     public bool p2fire;
     public bool p3fire;
+    public bool p3Start = true;
 
     public bool attacking;
 
@@ -47,7 +55,18 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
 
     // Update is called once per frame
     void Update () {
-        
+
+        healthBar.fillAmount = health / maxHealth;
+
+        if(controller.Difficulty <= 1)
+        {
+            healthCanvas.SetActive(true);
+        }
+        if(controller.Difficulty >= 2)
+        {
+            healthCanvas.SetActive(false);
+        }
+
             if (controller.phase == "Attack" && disabled == false )
             {
             //print("im attacking you fucker");
@@ -75,7 +94,7 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
 
                 if (controller.attackPhase == 3)
                 {
-                atkTime = p3Time;
+                //atkTime = p3Time;
                 if (attacking == false)
                 {
                     attacking = true;
@@ -96,7 +115,7 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
             {
                 disabled = true;
             }
-        if(controller.attackPhase == 3 && disabled == true)
+        if(controller.attackPhase == controller.maxAttackPhase - 1 && disabled == true)
         {
             dead = true;
             transform.gameObject.tag = "Untagged";
@@ -104,18 +123,18 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
         }
         if(disabled == true)
         {
-            Tbody.GetComponent<MeshRenderer>().material.color = Color.black;
-            cap.GetComponent<MeshRenderer>().material.color = Color.black;
+            Tbody.GetComponent<MeshRenderer>().material = nBlack;
+            cap.GetComponent<MeshRenderer>().material = nBlack;
         }
         if(disabled == false && changeColor == false)
         {
-            Tbody.GetComponent<MeshRenderer>().material.color = Color.blue;
-            cap.GetComponent<MeshRenderer>().material.color = Color.blue;
+            Tbody.GetComponent<MeshRenderer>().material = nBlue;
+            cap.GetComponent<MeshRenderer>().material = nBlue;
         }
         if(changeColor == true)
         {
-            Tbody.GetComponent<MeshRenderer>().material.color = Color.red;
-            cap.GetComponent<MeshRenderer>().material.color = Color.red;
+            Tbody.GetComponent<MeshRenderer>().material = nRed;
+            cap.GetComponent<MeshRenderer>().material = nRed;
             Invoke("ChangeBack", .1f);
         }
 
@@ -164,7 +183,16 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
 
     public IEnumerator PhaseThree()
     {
-        yield return new WaitForSeconds(atkTime);
+        if(p3Start == true)
+        {
+            atkTime = p3Time / 3;
+            yield return new WaitForSeconds(atkTime);
+        }
+        if (p3Start == false)
+        {
+            atkTime = p3Time;
+            yield return new WaitForSeconds(atkTime);
+        }
         p3fire = false;
         GameObject fire;
         fire = Instantiate(shot3, spawn.transform.position, spawn.transform.rotation) as GameObject;
@@ -197,12 +225,13 @@ public class SideTurret : MonoBehaviour, IDamageable<float> {
         cap.SetActive(false);
         barrel.SetActive(false);
         spawn.SetActive(false);
+        //healthBG.SetActive(false);
     }
 
     public void ChangeBack()
     {
-        Tbody.GetComponent<MeshRenderer>().material.color = Color.blue;
-        cap.GetComponent<MeshRenderer>().material.color = Color.blue;
+        Tbody.GetComponent<MeshRenderer>().material = nBlue;
+        cap.GetComponent<MeshRenderer>().material = nBlue;
         changeColor = false;
     }
 }

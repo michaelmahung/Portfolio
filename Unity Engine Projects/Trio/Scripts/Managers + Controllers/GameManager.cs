@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
             if (_instance == null) 
             {
-                Debug.LogError("Creating a GameManager instance from scratch, this is not ideal.\nPlease add a GameManager component to the scene");
+                Debug.LogError("No GameManager in scene");
                 GameObject gm = new GameObject("GameManager");
                 gm.AddComponent<GameManager>();
             }
@@ -37,7 +37,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<float> HighScores = new List<float>();
 
     [Header("Global Script References")]
-    public string PlayerRoom;
+    public string PlayerRoomName;
+    public RoomSetter PlayerRoom;
     public UIController UI;
     public Vector3 PlayerSpawnPosition;
     public Shaker CameraShaker;
@@ -54,6 +55,8 @@ public class GameManager : MonoBehaviour
     public delegate void OnPlayerRespawn();
     public event OnPlayerRespawn PlayerRespawned;
 
+    public PlayerMovement PlayerMovementReference { get; private set; }
+
     private bool canRespawn;
     private PlayerHealth playerHealthReference;
 
@@ -69,6 +72,7 @@ public class GameManager : MonoBehaviour
         ScoreAdded(); //Tell everyone weve changed our score.
     }
 
+    //Why not cache player rigidbody?
     public void ResetPlayerPosition()
     {
         PlayerObject.transform.position = PlayerSpawnPosition;
@@ -105,6 +109,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         PlayerHealth.PlayerKilled += CanRespawn;
+        LevelSpawning.FinishedSpawningRooms += FindStartLocation;
 
         //If there isnt a default spawn position set, make where the player starts in the scene the spawn position.
         if (PlayerSpawnPosition == null)
@@ -113,12 +118,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //TODO -- dont do this
+    private void FindStartLocation()
+    {
+        PlayerSpawnPosition = GameObject.Find("PlayerSpawn").transform.position;
+        ResetPlayerPosition();
+    }
+
     //Basically the start function
     private void SetComponents()
     {
         playerHealthReference = FindObjectOfType<PlayerHealth>();
         PlayerObject = playerHealthReference.gameObject;
-        PlayerRoom = PlayerObject.GetComponent<PlayerStats>().MyRoomName;
+        PlayerMovementReference = PlayerObject.GetComponent<PlayerMovement>();
+        PlayerRoomName = PlayerObject.GetComponent<PlayerStats>().MyRoomName;
         UI = FindObjectOfType<UIController>();
     }
 
